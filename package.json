@@ -20,7 +20,10 @@
   },
   "homepage": "https://github.com/Mucht/discover-gulp#readme",
   "devDependencies": {
+    "del": "^2.2.2",
     "gulp": "^3.9.1",
-    "gulp-imagemin": "^3.0.3"
+    "gulp-imagemin": "^3.0.3",
+    "gulp-newer": "^1.2.0",
+    "gulp-size": "^2.1.0"
   }
 }
