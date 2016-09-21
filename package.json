@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Mucht/discover-gulp/issues"
   },
-  "homepage": "https://github.com/Mucht/discover-gulp#readme"
+  "homepage": "https://github.com/Mucht/discover-gulp#readme",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
 }
