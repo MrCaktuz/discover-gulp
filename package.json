@@ -21,5 +21,8 @@
   "homepage": "https://github.com/Mucht/discover-gulp#readme",
   "dependencies": {
     "gulp": "^3.9.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
   }
 }
