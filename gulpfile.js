@@ -10,6 +10,7 @@ var
     preprocess = require( 'gulp-preprocess' ),
     pkg = require( './package.json' ),
     htmlClean = require( 'gulp-htmlclean' ),
+    browserSync = require( 'browser-sync' ),
     del = require( 'del' );
 
 // Définition de quelques variables générales pour notre gulpfile.
@@ -51,6 +52,14 @@ var
             author: pkg.author,
             version: pkg.version
         }
+    },
+    oSyncOpts = {
+        server: {
+            baseDir: sDest,
+            index: 'index.html'
+        },
+        open: false,
+        notify: true
     };
 
 // Définition des taches.
@@ -89,15 +98,20 @@ gulp.task( 'html', function(){
     return page.pipe( gulp.dest( oHtml.out ) );
 } )
 
+gulp.task( 'browsersync', function(){
+    browserSync( oSyncOpts );
+} )
+
 gulp.task( 'sass', function(){
     return gulp.src( oCss.in )
         .pipe(sass( oCss.oSassOpts ))
-        .pipe( gulp.dest(oCss.out) );
+        .pipe( gulp.dest(oCss.out) )
+        .pipe( browserSync.reload( {stream: true} ) );
 } )
 
 // Tache par défault exécuté lorsqu'on tape juste gulp dans le terminal.
-gulp.task('default', ['images', 'sass', 'html'], function(){
-    gulp.watch( oHtml.watch, ['html'] );
+gulp.task('default', ['images', 'sass', 'html', 'browsersync'], function(){
+    gulp.watch( oHtml.watch, ['html', browserSync.reload] );
     gulp.watch( oImagesOpts.watch, ['images'] );
     gulp.watch( oCss.watch, ['sass'] );
 });
