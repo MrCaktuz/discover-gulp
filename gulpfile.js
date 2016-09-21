@@ -70,6 +70,7 @@ gulp.task( 'sass', function(){
 } )
 
 // Tache par défault exécuté lorsqu'on tape juste gulp dans le terminal.
-gulp.task('default', ['images'], function(){
-    gulp.watch( oImagesOpts.watch, ['images'] )
+gulp.task('default', ['images', 'sass'], function(){
+    gulp.watch( oImagesOpts.watch, ['images'] );
+    gulp.wathc( oCss.watch, ['sass'] );
 });
