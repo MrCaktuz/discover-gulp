@@ -7,10 +7,14 @@ var
     destClean = require( 'gulp-dest-clean' ),
     imacss = require( 'gulp-imacss' ),
     sass = require( 'gulp-sass' ),
+    preprocess = require( 'gulp-preprocess' ),
+    pkg = require( './package.json' ),
+    htmlClean = require( 'gulp-htmlclean' ),
     del = require( 'del' );
 
 // Définition de quelques variables générales pour notre gulpfile.
 var
+    devBuild = ( ( process.env.NODE_ENV || 'development' ).trim().toLowerCase() !== 'production' ),
     sSource = 'source/',
     sDest = 'build/';
 
@@ -33,9 +37,19 @@ var
         watch: [sSource + 'scss/**/*'],
         out: sDest + 'css/',
         oSassOpts: {
-            outputStyle: 'compressed',
+            outputStyle: 'nested',
             precision: 3,
             errLogToConsole: true
+        }
+    },
+    oHtml = {
+        in: sSource + '*.html',
+        watch: [sSource + '*.html', sSource + 'template/**/*'],
+        out: sDest,
+        oContext: {
+            devBuild: devBuild,
+            author: pkg.author,
+            version: pkg.version
         }
     };
 
@@ -63,6 +77,18 @@ gulp.task( 'imageuri', function(){
         .pipe( gulp.dest( oImageUriOpts.out ) );
 } )
 
+gulp.task( 'html', function(){
+    var page = gulp.src( oHtml.in ).pipe( preprocess( {context: oHtml.oContext} ) )
+    if (!devBuild) {
+        page = page
+            .pipe( size( {title:'HTML avant minification: '} ) )
+            .pipe( htmlClean() )
+            .pipe( size( {title:'HTML après minification: '} ) );
+    }
+
+    return page.pipe( gulp.dest( oHtml.out ) );
+} )
+
 gulp.task( 'sass', function(){
     return gulp.src( oCss.in )
         .pipe(sass( oCss.oSassOpts ))
@@ -70,7 +96,8 @@ gulp.task( 'sass', function(){
 } )
 
 // Tache par défault exécuté lorsqu'on tape juste gulp dans le terminal.
-gulp.task('default', ['images', 'sass'], function(){
+gulp.task('default', ['images', 'sass', 'html'], function(){
+    gulp.watch( oHtml.watch, ['html'] );
     gulp.watch( oImagesOpts.watch, ['images'] );
-    gulp.wathc( oCss.watch, ['sass'] );
+    gulp.watch( oCss.watch, ['sass'] );
 });
